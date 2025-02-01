@@ -150,21 +150,26 @@ app.get("/pembayaran/:marketing_id/:payment_date", async (req, res) => {
     // Construct the SQL query to group by year-month and check the condition for "Lunas" or "Kredit"
     let query = `
         SELECT 
-            TO_CHAR(p.payment_date, 'YYYY-MM') AS month,
+            CONCAT(TO_CHAR(DATE_TRUNC('month', p.payment_date), 'YYYY'), ' - ', TO_CHAR(DATE_TRUNC('month', p.payment_date), 'FMMonth')) AS bulan,
             SUM(amount_paid) AS total_amount_paid,
             CASE 
-              WHEN SUM(amount_paid) >= p.remaining_balance THEN 'Lunas'
-              ELSE 'Kredit'
-            END AS status
+                WHEN SUM(amount_paid) >= p.remaining_balance THEN 'Lunas'
+                ELSE 'Kredit / Belum Lunas'
+            END AS status,
+            m.name,
+            p.marketing_id
         FROM 
             pembayaran p
         LEFT JOIN 
             marketing m ON p.marketing_id = m.id
-        WHERE 
+            WHERE 
             m.id = $1
-        AND TO_CHAR(p.payment_date, 'YYYY-MM') = $2  -- Filter by the provided year-month (YYYY-MM)
+        AND TO_CHAR(p.payment_date, 'YYYY-MM') = $2
         GROUP BY 
-            TO_CHAR(p.payment_date, 'YYYY-MM'), p.remaining_balance;
+            DATE_TRUNC('month', p.payment_date), 
+            m.name,
+            p.remaining_balance,
+            p.marketing_id;
       `;
 
     const result = await pool.query(query, [marketing_id, payment_date]);

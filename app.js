@@ -115,10 +115,9 @@ app.get("/komisi", async (req, res) => {
   
   
 
-  // **2. Ambil Semua Pembayaran**
   app.get("/pembayaran", async (req, res) => {
     try {
-      const result = await pool.query("SELECT * FROM pembayaran ORDER BY payment_date DESC");
+      const result = await pool.query("SELECT * FROM pembayaran p left join marketing m on p.marketing_id = m.id ORDER BY payment_date DESC");
       res.json(result.rows);
     } catch (error) {
       console.error(error);
@@ -126,6 +125,57 @@ app.get("/komisi", async (req, res) => {
     }
   });
 
+
+  app.get("/pembayaran/:marketing_id/:payment_date", async (req, res) => {
+    const { marketing_id, payment_date } = req.params; // Extract both parameters from the route
+    
+    try {
+      // Construct the SQL query to group by year-month and check the condition for "Lunas" or "Kredit"
+      let query = `
+        SELECT 
+            TO_CHAR(p.payment_date, 'YYYY-MM') AS month,
+            SUM(amount_paid) AS total_amount_paid,
+            CASE 
+              WHEN SUM(amount_paid) >= p.remaining_balance THEN 'Lunas'
+              ELSE 'Kredit'
+            END AS status
+        FROM 
+            pembayaran p
+        LEFT JOIN 
+            marketing m ON p.marketing_id = m.id
+        WHERE 
+            m.id = $1
+        AND TO_CHAR(p.payment_date, 'YYYY-MM') = $2  -- Filter by the provided year-month (YYYY-MM)
+        GROUP BY 
+            TO_CHAR(p.payment_date, 'YYYY-MM'), p.remaining_balance;
+      `;
+  
+      const result = await pool.query(query, [marketing_id, payment_date]);
+  
+      // Check if no records are found
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Tidak ada pembayaran untuk marketing ini pada bulan tersebut" });
+      }
+  
+      // Send the result as JSON
+      res.json(result.rows);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Terjadi kesalahan server" });
+    }
+  });
+  
+  
+
+  app.get("/marketing", async (req, res) => {
+    try {
+      const result = await pool.query("SELECT * FROM marketing");
+      res.json(result.rows);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Terjadi kesalahan server" });
+    }
+  });
 
 
 // Menjalankan server

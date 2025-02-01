@@ -1,0 +1,26 @@
+CREATE TABLE marketing (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE penjualan (
+    id SERIAL PRIMARY KEY,
+    transaction_number VARCHAR(50) NOT NULL UNIQUE,
+    marketing_id INTEGER NOT NULL,
+    date DATE NOT NULL,
+    cargo_fee INT NOT NULL,
+    total_balance INT NOT NULL,
+    grand_total INT NOT NULL,
+    CONSTRAINT fk_marketing FOREIGN KEY (marketing_id) REFERENCES marketing(id) ON DELETE CASCADE
+);
+
+CREATE TABLE pembayaran (
+    id SERIAL PRIMARY KEY,
+    transaction_number VARCHAR(50) NOT NULL,
+    payment_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    amount_paid NUMERIC(15,2) NOT NULL,
+    remaining_balance NUMERIC(15,2) NOT NULL,
+    status VARCHAR(20) CHECK (status IN ('Cicilan', 'Lunas')) NOT NULL,
+    FOREIGN KEY (transaction_number) REFERENCES penjualan(transaction_number) ON DELETE CASCADE
+);

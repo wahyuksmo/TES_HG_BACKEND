@@ -1,0 +1,111 @@
+{
+    "info": {
+        "_postman_id": "d4dbfee0-c09a-40f8-b15e-3cdbb327143a",
+        "name": "TES_HG",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "GET KOMISI",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "https://tes-hg-backend.vercel.app/komisi",
+                    "path": [
+                        "komisi"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "tes-hg-backend",
+                        "vercel",
+                        "app"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "POST PEMBAYARAN",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "https://tes-hg-backend.vercel.app/pembayaran",
+                    "path": [
+                        "pembayaran"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "tes-hg-backend",
+                        "vercel",
+                        "app"
+                    ]
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"marketing_id\": 2,\n  \"amount_paid\": 1500000\n}\n"
+                }
+            }
+        },
+        {
+            "name": "GET PEMBAYARAN",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "https://tes-hg-backend.vercel.app/pembayaran",
+                    "path": [
+                        "pembayaran"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "tes-hg-backend",
+                        "vercel",
+                        "app"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "GET PEMBAYARAN HISTORY",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "https://tes-hg-backend.vercel.app/pembayaran/1/2025-02",
+                    "path": [
+                        "pembayaran",
+                        "1",
+                        "2025-02"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "tes-hg-backend",
+                        "vercel",
+                        "app"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "GET MARKETING",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "https://tes-hg-backend.vercel.app/marketing",
+                    "path": [
+                        "marketing"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "tes-hg-backend",
+                        "vercel",
+                        "app"
+                    ]
+                }
+            }
+        }
+    ]
+}

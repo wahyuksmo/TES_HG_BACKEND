@@ -125,7 +125,7 @@ app.get("/pembayaran", async (req, res) => {
                     WHEN SUM(amount_paid) >= p.remaining_balance THEN 'Lunas'
                     ELSE 'Kredit / Belum Lunas'
                 END AS status,
-                p.remainig_balance,
+                p.remaining_balance,
                 m.name,
                 p.marketing_id
             FROM 
@@ -157,7 +157,7 @@ app.get("/pembayaran/:marketing_id/:payment_date", async (req, res) => {
                 WHEN SUM(amount_paid) >= p.remaining_balance THEN 'Lunas'
                 ELSE 'Kredit / Belum Lunas'
             END AS status,
-            p.remainig_balance,
+            p.remaining_balance,
             m.name,
             p.marketing_id
         FROM 
